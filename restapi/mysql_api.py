@@ -14,11 +14,11 @@ mysql = MySQL()
 
 config = configparser.ConfigParser()
 config.read("/home/rahul/test/kubernetesconfig.ini")
-username= config.get('section1','username')
+username= config.get('mysql','username')
 # print(username)
-password= config.get('section1','password')
-databasedb= config.get('section1','databasedb')
-databasehost= config.get('section1','databasehost')
+password= config.get('mysql','password')
+databasedb= config.get('mysql','databasedb')
+databasehost= config.get('mysql','databasehost')
 # MySQL configurations
 app.config['MYSQL_DATABASE_USER'] = username
 app.config['MYSQL_DATABASE_PASSWORD'] = password
