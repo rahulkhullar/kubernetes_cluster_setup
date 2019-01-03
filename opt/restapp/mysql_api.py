@@ -9,28 +9,22 @@ import time
 import json
 import requests
 
-app = Flask(__name__)
+application = Flask(__name__)
 mysql = MySQL()
 
 config = configparser.ConfigParser()
-config.read("/etc/opt/config.ini")
-username= config.get('mysql','username')
-# print(username)
-password= config.get('mysql','password')
-databasedb= config.get('mysql','databasedb')
-databasehost= config.get('mysql','databasehost')
-port= config.get('mysql','port')
+config.read("/etc/restapp/config.ini")
 # MySQL configurations
-app.config['MYSQL_DATABASE_USER'] = username
-app.config['MYSQL_DATABASE_PASSWORD'] = password
-app.config['MYSQL_DATABASE_DB'] = databasedb
-app.config['MYSQL_DATABASE_HOST'] = databasehost
-app.config['MYSQL_DATABASE_PORT'] = port
+application.config['MYSQL_DATABASE_USER'] = username= config.get('mysql','username')
+application.config['MYSQL_DATABASE_PASSWORD'] = config.get('mysql','password')
+application.config['MYSQL_DATABASE_DB'] = config.get('mysql','databasedb')
+application.config['MYSQL_DATABASE_HOST'] = config.get('mysql','databasehost') 
+application.config['MYSQL_DATABASE_PORT'] = config.getint('mysql','port') 
 #app.config['MYSQL_DATABASE_HOST'] = 'localhost:13306'
 
-mysql.init_app(app)
+mysql.init_app(application)
 
-@app.route('/mysql/data/', methods= ['GET'])
+@application.route('/mysql/data/', methods= ['GET'])
 def get_tasks():
   cur = mysql.connect().cursor()
   cur.execute("select * from addressapi.address")
@@ -40,7 +34,7 @@ def get_tasks():
   return jsonify({'address': r})
 
 
-@app.route('/mysql/data/<int:id>', methods=['GET'])
+@application.route('/mysql/data/<int:id>', methods=['GET'])
 def get_task(id):
   print("Inside GET")
   cur = mysql.connect().cursor()
@@ -68,7 +62,7 @@ def get_task(id):
 #   return
 
 
-@app.route('/mysql/data/', methods=['POST'])
+@application.route('/mysql/data/', methods=['POST'])
 def add_item():
   data = request.json
   # print (data)
@@ -89,7 +83,7 @@ def add_item():
   return resp
 
 
-@app.route('/mysql/data/<id>', methods=['PUT'])
+@application.route('/mysql/data/<id>', methods=['PUT'])
 def update_rec(id):
   get_resp = get_task(id)
   print (get_resp)
@@ -130,7 +124,7 @@ def update_rec(id):
   return resp
 
 
-@app.route('/mysql/data/<id>/', methods=['DELETE'])
+@application.route('/mysql/data/<id>/', methods=['DELETE'])
 def delete_item(id):
   conn = mysql.connect()
   cursor = conn.cursor()
@@ -141,3 +135,5 @@ def delete_item(id):
   cursor.close()
   conn.close()
   return resp
+if __name__ == "__main__":
+    application.run(host='0.0.0.0')
