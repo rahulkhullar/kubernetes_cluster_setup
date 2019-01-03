@@ -13,17 +13,19 @@ app = Flask(__name__)
 mysql = MySQL()
 
 config = configparser.ConfigParser()
-config.read("/home/rahul/test/kubernetesconfig.ini")
+config.read("/etc/opt/config.ini")
 username= config.get('mysql','username')
 # print(username)
 password= config.get('mysql','password')
 databasedb= config.get('mysql','databasedb')
 databasehost= config.get('mysql','databasehost')
+port= config.get('mysql','port')
 # MySQL configurations
 app.config['MYSQL_DATABASE_USER'] = username
 app.config['MYSQL_DATABASE_PASSWORD'] = password
 app.config['MYSQL_DATABASE_DB'] = databasedb
 app.config['MYSQL_DATABASE_HOST'] = databasehost
+app.config['MYSQL_DATABASE_PORT'] = port
 #app.config['MYSQL_DATABASE_HOST'] = 'localhost:13306'
 
 mysql.init_app(app)
